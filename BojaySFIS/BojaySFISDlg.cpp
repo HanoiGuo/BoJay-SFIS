@@ -232,11 +232,8 @@ BOOL CBojaySFISDlg::OnInitDialog()
 			{
 				m_sheet.AddPage(L"PCBA界面", &m_PCBA, IDD_DIALOG_PCBA);
 			}
-			else if (strstr(itemName[i].c_str(),"查询"))
-			{
-				m_sheet.AddPage(L"查询界面", &m_PCBA, IDD_DIALOG_SEARCH);
-			}
 		}
+		m_sheet.AddPage(L"查询界面", &m_PCBA, IDD_DIALOG_SEARCH);
 		m_sheet.Show(0);
 	}
 	else
@@ -376,7 +373,7 @@ void CBojaySFISDlg::GetMyCurrentTime(CString &time)
 void CBojaySFISDlg::OnClose()
 {
 	// TODO: Add your message handler code here and/or call default
-	DeleteFile(L"\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt");
+	//DeleteFile(L"\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt");
 	m_dbDemo.ClearAllParameters();
 	m_dbDemo.CloseConnection();
 	CDialogEx::OnClose();

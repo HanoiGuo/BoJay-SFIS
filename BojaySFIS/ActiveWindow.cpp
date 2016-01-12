@@ -965,15 +965,6 @@ bool CActiveWindow::RootFunction(CString cSerialNumber, CString csState,CString 
 void CActiveWindow::OnBnClickedButtonActiveAll()
 {
 	// TODO: Add your control notification handler code here
-	bool res = false;
-	CString str;
-	res = operateFileClass.CheckDataisBusy("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt",0,str);
-	if (!res)
-	{
-		AfxMessageBox(str);
-		return;
-	}
-
 	if (bRootActiveWindowAuthority)
 	{
 		RootFunction();
@@ -1204,6 +1195,15 @@ void CActiveWindow::NoRootFunction(void)
 		return;
 	}
 
+	//bool res = false;
+	CString str;
+	res = operateFileClass.CheckDataisBusy("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt",0,str);
+	if (!res)
+	{
+		AfxMessageBox(str);
+		return;
+	}
+
 	//1.连接数据库,DemoTable是数据库的名称
 	if (!m_dbDemo.IsRecordsetOpened())
 	{
@@ -1376,6 +1376,14 @@ void CActiveWindow::RootFunction(void)
 	if (!res)
 	{
 		AfxMessageBox(L"打开数据库失败");
+		return;
+	}
+
+	CString str;
+	res = operateFileClass.CheckDataisBusy("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt",0,str);
+	if (!res)
+	{
+		AfxMessageBox(str);
 		return;
 	}
 

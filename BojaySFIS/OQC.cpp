@@ -264,6 +264,7 @@ BOOL COQC::OnInitDialog()
 void COQC::OnBnClickedButtonOqcPass()
 {
 	// TODO: Add your control notification handler code here
+	/*
 	bool res = false;
 	CString str;
 	COperateINIFile operateFile;
@@ -273,6 +274,7 @@ void COQC::OnBnClickedButtonOqcPass()
 		AfxMessageBox(str);
 		return;
 	}
+	*/
 	if (bRootOQCCodeAuthority)
 	{
 		RootFunction(L"OK");
@@ -487,6 +489,16 @@ void COQC::NoRootFunction(CString state)
 	if (!res)
 	{
 		AfxMessageBox(L"打开数据库失败");
+		return;
+	}
+
+	//bool res = false;
+	CString str;
+	//COperateINIFile operateFile;
+	res = operateFile.CheckDataisBusy("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt",3,str);
+	if (!res)
+	{
+		AfxMessageBox(str);
 		return;
 	}
 
@@ -801,6 +813,16 @@ void COQC::RootFunction(CString state)
 	if (!res)
 	{
 		AfxMessageBox(L"打开数据库失败");
+		return;
+	}
+
+	//bool res = false;
+	CString str;
+	//COperateINIFile operateFile;
+	res = operateFile.CheckDataisBusy("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt",3,str);
+	if (!res)
+	{
+		AfxMessageBox(str);
 		return;
 	}
 

@@ -59,6 +59,7 @@ END_MESSAGE_MAP()
 void CShipment::OnBnClickedButtonShip()
 {
 	// TODO: Add your control notification handler code here
+	/*
 	bool res = false;
 	CString str;
 	COperateINIFile operateFile;
@@ -68,6 +69,7 @@ void CShipment::OnBnClickedButtonShip()
 		AfxMessageBox(str);
 		return;
 	}
+	*/
 	if (bRootShipCodeAuthority)
 	{
 		RootFunction();
@@ -301,6 +303,16 @@ void CShipment::NoRootFunction(void)
 		return;
 	}
 
+	//bool res = false;
+	CString str;
+	//COperateINIFile operateFile;
+	res = operateFile.CheckDataisBusy("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt",5,str);
+	if (!res)
+	{
+		AfxMessageBox(str);
+		return;
+	}
+
 	//1.连接数据库,DemoTable是数据库的名称
 	res = m_dbDemo.OpenRecordset("SELECT * FROM DemoTable");
 	if (!res)
@@ -506,6 +518,16 @@ void CShipment::RootFunction(void)
 	if (!res)
 	{
 		AfxMessageBox(L"打开数据库失败");
+		return;
+	}
+
+	//bool res = false;
+	CString str;
+	//COperateINIFile operateFile;
+	res = operateFile.CheckDataisBusy("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt",5,str);
+	if (!res)
+	{
+		AfxMessageBox(str);
 		return;
 	}
 

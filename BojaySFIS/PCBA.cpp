@@ -106,6 +106,7 @@ void CPCBA::OnPaint()
 void CPCBA::OnBnClickedButtonPcba()
 {
 	// TODO: Add your control notification handler code here
+	/*
 	bool res = false;
 	CString str;
 	COperateINIFile operateFile;
@@ -115,6 +116,7 @@ void CPCBA::OnBnClickedButtonPcba()
 		AfxMessageBox(str);
 		return;
 	}
+	*/
 	if (bRootPCBACodeAuthority)
 	{
 		RootFunction();
@@ -279,6 +281,16 @@ void CPCBA::NoRootFunction(void)
 	if (!res)
 	{
 		AfxMessageBox(L"打开数据库失败");
+		return;
+	}
+
+	//bool res = false;
+	CString str;
+	//COperateINIFile operateFile;
+	res = operateFile.CheckDataisBusy("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt",6,str);
+	if (!res)
+	{
+		AfxMessageBox(str);
 		return;
 	}
 
@@ -489,7 +501,6 @@ void CPCBA::RootFunction(void)
 		return;
 	}
 
-
 	if (m_dbDemo.IsConnecting())
 	{
 		m_dbDemo.CloseConnection();
@@ -500,6 +511,16 @@ void CPCBA::RootFunction(void)
 	if (!res)
 	{
 		AfxMessageBox(L"打开数据库失败");
+		return;
+	}
+
+	//bool res = false;
+	CString str;
+	//COperateINIFile operateFile;
+	res = operateFile.CheckDataisBusy("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt",6,str);
+	if (!res)
+	{
+		AfxMessageBox(str);
 		return;
 	}
 
