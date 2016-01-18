@@ -211,6 +211,9 @@ bool COperateINIFile::CheckDataisBusy(char *filePath,int mode,CString &message)
 	case 6:
 		temp = L"PCBA界面";
 		break;
+	case 7:
+		temp = L"查询界面";
+		break;
 	}
 	if(access(filePath,0))
 	{

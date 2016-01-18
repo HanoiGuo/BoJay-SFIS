@@ -233,7 +233,7 @@ BOOL CBojaySFISDlg::OnInitDialog()
 				m_sheet.AddPage(L"PCBA界面", &m_PCBA, IDD_DIALOG_PCBA);
 			}
 		}
-		m_sheet.AddPage(L"查询界面", &m_PCBA, IDD_DIALOG_SEARCH);
+		m_sheet.AddPage(L"查询界面", &m_search, IDD_DIALOG_SEARCH);
 		m_sheet.Show(0);
 	}
 	else
@@ -258,7 +258,7 @@ BOOL CBojaySFISDlg::OnInitDialog()
 		{
 			m_sheet.AddPage(L"PCBA界面", &m_PCBA, IDD_DIALOG_PCBA);
 		}
-		m_sheet.AddPage(L"查询界面", &m_PCBA, IDD_DIALOG_SEARCH);
+		m_sheet.AddPage(L"查询界面", &m_search, IDD_DIALOG_SEARCH);
 		m_sheet.Show(0);
 	}
 

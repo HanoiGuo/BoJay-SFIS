@@ -32,4 +32,5 @@ public:
 	afx_msg void OnBnClickedButton1();
 	virtual BOOL OnInitDialog();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	bool OpenDataBase(CString produceName);
 };

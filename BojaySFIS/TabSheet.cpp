@@ -100,6 +100,6 @@ void CTabSheet::OnLButtonDown(UINT nFlags, CPoint point)
 		m_pPages[m_nCurrentPage]->ShowWindow(SW_HIDE);
 		m_nCurrentPage=GetCurFocus();
 		m_pPages[m_nCurrentPage]->ShowWindow(SW_SHOW);
-		//		m_pPages[m_nCurrentPage]->SetFocus();
+			//m_pPages[m_nCurrentPage]->SetFocus();
 	}
 }
