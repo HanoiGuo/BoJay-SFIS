@@ -367,3 +367,70 @@ bool COperateINIFile::CheckName(char *filePath,string id,CString &name)
 	}
 	return false;
 }
+
+
+bool COperateINIFile::GetProductName(char *filePath,vector<CString>&productName)
+{
+	if(access(filePath,0))
+	{
+		return false;
+	}
+	fstream nameFile(filePath,ios::in);
+	string str;
+	CString csStr;
+	if (nameFile.is_open())
+	{
+		while(getline(nameFile,str))
+		{
+			csStr = str.c_str();
+			productName.push_back(csStr);
+		}
+	}
+	else
+	{
+		nameFile.close();
+		return false;
+	}
+	nameFile.close();
+	return true;
+}
+
+bool COperateINIFile::GetWhatYouNeed(char *filePath,CString productname,char *keyWord,vector<CString>&result)
+{
+	if(access(filePath,0))
+	{
+		return false;
+	}
+	fstream nameFile(filePath,ios::in);
+	string strProductNmae = CStringA(productname);
+	string str;
+	CString csStr;
+	string temp;
+	int index = 0;
+	string tempProducdname;
+	if (nameFile.is_open())
+	{
+		while(getline(nameFile,str))
+		{
+			int index = str.find(":");
+			tempProducdname = str.substr(0,index);
+			if (tempProducdname == strProductNmae)
+			{
+				if (strstr(str.c_str(),keyWord))
+				{
+					index = str.find("=");
+					temp = str.substr(index+1,str.length());
+					csStr = temp.c_str();
+					result.push_back(csStr);
+				}
+			}
+		}
+	}
+	else
+	{
+		nameFile.close();
+		false;
+	}
+	nameFile.close();
+	return true;
+}

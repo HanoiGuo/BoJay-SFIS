@@ -114,7 +114,7 @@ BOOL CBojaySFISDlg::OnInitDialog()
 	m_mainTitle.SetTransparent(TRUE);
 	m_mainTitle.SetBkClr(RGB(159,227,251));
 	m_mainTitle.SetTextClr(RGB(0,0,255));
-	m_mainTitle.SetWindowText(_T("博杰生产管理软件 V1.7"));
+	m_mainTitle.SetWindowText(_T("博杰生产管理软件 V1.8"));
 	m_mainTitle.SetTextFont(40, 1, 0, _T("宋体") );//设置字体
 
 	//设置字体

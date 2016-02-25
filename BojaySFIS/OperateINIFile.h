@@ -19,5 +19,7 @@ public:
 	bool CheckDeliveryLocation(char *filePath ,vector<CString>&deliveryLocation);
 	bool CheckIsBindSoundTestTool(char *filePath,string &result);
 	bool CheckName(char *filePath,string id,CString &name);
+	bool GetProductName(char *filePath,vector<CString>&productName);
+	bool GetWhatYouNeed(char *filePath,CString productname,char *keyWord,vector<CString>&result);
 };
 
