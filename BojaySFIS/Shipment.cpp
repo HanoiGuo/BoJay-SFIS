@@ -59,6 +59,7 @@ END_MESSAGE_MAP()
 void CShipment::OnBnClickedButtonShip()
 {
 	// TODO: Add your control notification handler code here
+	/*
 	bool res = false;
 	CString str;
 	COperateINIFile operateFile;
@@ -68,6 +69,7 @@ void CShipment::OnBnClickedButtonShip()
 		AfxMessageBox(str);
 		return;
 	}
+	*/
 	if (bRootShipCodeAuthority)
 	{
 		RootFunction();
@@ -251,6 +253,7 @@ void CShipment::NoRootFunction(void)
 	GetDlgItem(IDC_EDIT_NAME_SHIP)->SetWindowText(cName);
 
 
+#if 1
 	//分离序列号
 	bool isFindSerial = false;
 	CString *pStr;
@@ -275,9 +278,13 @@ void CShipment::NoRootFunction(void)
 			break;
 		}
 	}
+#else
+	bool isFindSerial = false;
+	isFindSerial = true;
+#endif
 	if (isFindSerial)
 	{
-		cSerialNumber = tempStr.Mid(tempStr.GetLength()-6,tempStr.GetLength());
+		cSerialNumber = cSerialNumber.Mid(cSerialNumber.GetLength()-6,cSerialNumber.GetLength());
 		GetDlgItem(IDC_EDIT_SERIALNUMBER_SHIP)->SetWindowText(cSerialNumber);
 	}
 	else
@@ -298,6 +305,16 @@ void CShipment::NoRootFunction(void)
 	if (!res)
 	{
 		AfxMessageBox(L"打开数据库失败");
+		return;
+	}
+
+	//bool res = false;
+	CString str;
+	//COperateINIFile operateFile;
+	res = operateFile.CheckDataisBusy("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt",5,str);
+	if (!res)
+	{
+		AfxMessageBox(str);
 		return;
 	}
 
@@ -506,6 +523,16 @@ void CShipment::RootFunction(void)
 	if (!res)
 	{
 		AfxMessageBox(L"打开数据库失败");
+		return;
+	}
+
+	//bool res = false;
+	CString str;
+	//COperateINIFile operateFile;
+	res = operateFile.CheckDataisBusy("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt",5,str);
+	if (!res)
+	{
+		AfxMessageBox(str);
 		return;
 	}
 

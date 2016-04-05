@@ -114,7 +114,7 @@ BOOL CBojaySFISDlg::OnInitDialog()
 	m_mainTitle.SetTransparent(TRUE);
 	m_mainTitle.SetBkClr(RGB(159,227,251));
 	m_mainTitle.SetTextClr(RGB(0,0,255));
-	m_mainTitle.SetWindowText(_T("博杰生产管理软件 V1.7"));
+	m_mainTitle.SetWindowText(_T("博杰生产管理软件 V1.9临时版本"));
 	m_mainTitle.SetTextFont(40, 1, 0, _T("宋体") );//设置字体
 
 	//设置字体
@@ -232,11 +232,8 @@ BOOL CBojaySFISDlg::OnInitDialog()
 			{
 				m_sheet.AddPage(L"PCBA界面", &m_PCBA, IDD_DIALOG_PCBA);
 			}
-			else if (strstr(itemName[i].c_str(),"查询"))
-			{
-				m_sheet.AddPage(L"查询界面", &m_PCBA, IDD_DIALOG_SEARCH);
-			}
 		}
+		m_sheet.AddPage(L"查询界面", &m_search, IDD_DIALOG_SEARCH);
 		m_sheet.Show(0);
 	}
 	else
@@ -261,7 +258,7 @@ BOOL CBojaySFISDlg::OnInitDialog()
 		{
 			m_sheet.AddPage(L"PCBA界面", &m_PCBA, IDD_DIALOG_PCBA);
 		}
-		m_sheet.AddPage(L"查询界面", &m_PCBA, IDD_DIALOG_SEARCH);
+		m_sheet.AddPage(L"查询界面", &m_search, IDD_DIALOG_SEARCH);
 		m_sheet.Show(0);
 	}
 
@@ -376,7 +373,7 @@ void CBojaySFISDlg::GetMyCurrentTime(CString &time)
 void CBojaySFISDlg::OnClose()
 {
 	// TODO: Add your message handler code here and/or call default
-	DeleteFile(L"\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt");
+	//DeleteFile(L"\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt");
 	m_dbDemo.ClearAllParameters();
 	m_dbDemo.CloseConnection();
 	CDialogEx::OnClose();

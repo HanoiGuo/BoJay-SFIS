@@ -3,7 +3,10 @@
 
 // COQC dialog
 #include "Resource.h"
+#include "afxwin.h"
+#include <vector>
 
+using namespace std;
 class COQC : public CDialogEx
 {
 	DECLARE_DYNAMIC(COQC)
@@ -43,4 +46,10 @@ public:
 	CBrush m_BrushRed;
 	CBrush m_BrushGreen;
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	CComboBox m_ProductNameCombox;
+	CButton m_OQC_NG;
+	CButton m_OQC_OK;
+	bool GetInformation();
+	void UpdataNewUI(void);
+	afx_msg void OnCbnSelchangeComboPnameCombox();
 };

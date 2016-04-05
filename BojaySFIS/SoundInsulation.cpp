@@ -59,6 +59,7 @@ END_MESSAGE_MAP()
 void CSoundInsulation::OnBnClickedButtonSound()
 {
 	// TODO: Add your control notification handler code here
+	/*
 	bool res = false;
 	CString str;
 	COperateINIFile operateFile;
@@ -68,6 +69,7 @@ void CSoundInsulation::OnBnClickedButtonSound()
 		AfxMessageBox(str);
 		return;
 	}
+	*/
 
 	if (bRootSoundAuthority)
 	{
@@ -362,9 +364,9 @@ void CSoundInsulation::NoRootFunction(void)
 	GetDlgItem(IDC_EDIT_NAME_SOUND)->SetWindowText(cName);
 
 
-
-	//分离序列号
 	bool isFindSerial = false;
+#if 1
+	//分离序列号
 	CString *pStr;
 	int iSubStrs=0;
 	pStr = SplitString(cSerialNumber,';',iSubStrs);
@@ -387,9 +389,12 @@ void CSoundInsulation::NoRootFunction(void)
 			break;
 		}
 	}
+#else
+	isFindSerial = true;
+#endif
 	if (isFindSerial)
 	{
-		cSerialNumber = tempStr.Mid(tempStr.GetLength()-6,tempStr.GetLength());
+		cSerialNumber = cSerialNumber.Mid(cSerialNumber.GetLength()-6,cSerialNumber.GetLength());
 		GetDlgItem(IDC_EDIT_SERIALNUMBER_SOUND)->SetWindowText(cSerialNumber);
 	}
 	else
@@ -410,6 +415,16 @@ void CSoundInsulation::NoRootFunction(void)
 	if (!res)
 	{
 		AfxMessageBox(L"打开数据库失败");
+		return;
+	}
+
+	//bool res = false;
+	CString str;
+	//COperateINIFile operateFile;
+	res = operateFile.CheckDataisBusy("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt",2,str);
+	if (!res)
+	{
+		AfxMessageBox(str);
 		return;
 	}
 
@@ -677,6 +692,16 @@ void CSoundInsulation::RootFunction(void)
 	if (!res)
 	{
 		AfxMessageBox(L"打开数据库失败");
+		return;
+	}
+
+	//bool res = false;
+	CString str;
+	//COperateINIFile operateFile;
+	res = operateFile.CheckDataisBusy("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt",2,str);
+	if (!res)
+	{
+		AfxMessageBox(str);
 		return;
 	}
 

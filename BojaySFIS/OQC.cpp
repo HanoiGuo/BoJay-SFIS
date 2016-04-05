@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include "OperateINIFile.h"
+//#include <fstream>
 
 using namespace std;
 extern CDBAdo	m_dbDemo;
@@ -20,6 +21,11 @@ bool bRootOQCCodeAuthority = false;
 
 static int  OQCStatus = 0;
 IMPLEMENT_DYNAMIC(COQC, CDialogEx)
+
+
+vector<CString>csProductName;  //机种名称
+vector<CString>csCode;         //物料编码
+vector<CString>csCodeName;     //物料名称
 
 COQC::COQC(CWnd* pParent /*=NULL*/)
 	: CDialogEx(COQC::IDD, pParent)
@@ -38,6 +44,9 @@ void COQC::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHECK_SPECIAL, m_SpecialCheck);
 	DDX_Control(pDX, IDC_COMBO_CUSTOMER_OQC, m_customerOQC);
 	DDX_Control(pDX, IDC_COMBO_DATABASENAME_OQC, m_dataBaseOQC);
+	DDX_Control(pDX, IDC_COMBO_PNAME_COMBOX, m_ProductNameCombox);
+	DDX_Control(pDX, IDC_BUTTON_NG_OQC, m_OQC_NG);
+	DDX_Control(pDX, IDC_BUTTON_OK_OQC, m_OQC_OK);
 }
 
 
@@ -50,6 +59,7 @@ BEGIN_MESSAGE_MAP(COQC, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_OK_OQC, &COQC::OnBnClickedButtonOkOqc)
 	ON_BN_CLICKED(IDC_BUTTON_NG_OQC, &COQC::OnBnClickedButtonNgOqc)
 	ON_WM_CTLCOLOR()
+	ON_CBN_SELCHANGE(IDC_COMBO_PNAME_COMBOX, &COQC::OnCbnSelchangeComboPnameCombox)
 END_MESSAGE_MAP()
 
 
@@ -236,10 +246,12 @@ BOOL COQC::OnInitDialog()
 	GetDlgItem(IDC_EDIT_SERIALNUMBER_OQC_Special)->EnableWindow(FALSE);
 	GetDlgItem(IDC_EDIT_SERIALNUMBER_OQC_Special_TWO)->EnableWindow(FALSE);
 	GetDlgItem(IDC_EDIT_SERIALNUMBER_OQC_Special_THREE)->EnableWindow(FALSE);
+	GetDlgItem(IDC_EDIT_SERIALNUMBER_OQC_Special_FOUR)->EnableWindow(FALSE);
 
 	GetDlgItem(IDC_EDIT_ONE)->EnableWindow(FALSE);
 	GetDlgItem(IDC_EDIT_TWO)->EnableWindow(FALSE);
 	GetDlgItem(IDC_EDIT_THREE)->EnableWindow(FALSE);
+	GetDlgItem(IDC_EDIT_FOUR)->EnableWindow(FALSE);
 
 	CString csTemp;
 	for (int i=0; i<dataBase.size(); i++)
@@ -256,6 +268,28 @@ BOOL COQC::OnInitDialog()
 	m_BrushRed.CreateSolidBrush(RGB(255,0,0));
 	m_BrushGreen.CreateSolidBrush(RGB(0,255,0));
 
+	//读取OQC-Config.txtx配置文件，初始化
+	csProductName.clear();  //机种名称
+	csCode.clear();         //物料编码
+	csCodeName.clear();     //物料名称
+
+	bool res;
+	COperateINIFile operateFile;
+	res = operateFile.GetProductName("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\配置文件\\OQC-ProductName.txt",csProductName);
+	if (!res)
+	{
+		m_OQC_NG.EnableWindow(FALSE);
+		m_OQC_OK.EnableWindow(FALSE);
+		AfxMessageBox(L"寻找OQC-ProductName.txt文件失败，不能测试");
+	}
+	for (int i=0; i<csProductName.size(); i++)
+	{
+		m_ProductNameCombox.AddString(csProductName.at(i));
+	}
+	//m_ProductNameCombox.SetCurSel(0);
+	//UpdataNewUI();
+
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -264,6 +298,7 @@ BOOL COQC::OnInitDialog()
 void COQC::OnBnClickedButtonOqcPass()
 {
 	// TODO: Add your control notification handler code here
+	/*
 	bool res = false;
 	CString str;
 	COperateINIFile operateFile;
@@ -273,6 +308,47 @@ void COQC::OnBnClickedButtonOqcPass()
 		AfxMessageBox(str);
 		return;
 	}
+	*/
+	int lenOne = (int)csCode.size();
+	int lenTwo = (int)csCodeName.size();
+	CString temp;
+	if (lenOne > 0 || lenTwo > 0)
+	{
+		GetDlgItemText(IDC_EDIT_N_ONE,temp);
+		if (temp.GetLength() < 1)
+		{
+			AfxMessageBox(L"请输入批次信息1");
+			return;
+		}
+	}
+	if (lenOne > 1 || lenTwo > 1)
+	{
+		GetDlgItemText(IDC_EDIT_N_TWO,temp);
+		if (temp.GetLength() < 1)
+		{
+			AfxMessageBox(L"请输入批次信息2");
+			return;
+		}
+	}
+	if (lenOne > 2 || lenTwo > 2)
+	{
+		GetDlgItemText(IDC_EDIT_N_THREE,temp);
+		if (temp.GetLength() < 1)
+		{
+			AfxMessageBox(L"请输入批次信息3");
+			return;
+		}
+	}
+	if (lenOne > 3 || lenTwo > 3)
+	{
+		GetDlgItemText(IDC_EDIT_N_FOUR,temp);
+		if (temp.GetLength() < 1)
+		{
+			AfxMessageBox(L"请输入批次信息4");
+			return;
+		}
+	}
+
 	if (bRootOQCCodeAuthority)
 	{
 		RootFunction(L"OK");
@@ -416,7 +492,13 @@ void COQC::NoRootFunction(CString state)
 	}
 	m_customerOQC.GetLBText(nIndex,cCustomer);
 
-
+	nIndex = m_ProductNameCombox.GetCurSel();
+	if (nIndex < 0)
+	{
+		AfxMessageBox(L"你需要选择一个产品名称");
+		return;
+	}
+	
 	string sID;
 	sID = CStringA(cID);
 	COperateINIFile operateFile;
@@ -440,6 +522,7 @@ void COQC::NoRootFunction(CString state)
 		}
 	}
 
+#if 1
 	//分离序列号
 	bool isFindSerial = false;
 	CString *pStr;
@@ -464,9 +547,14 @@ void COQC::NoRootFunction(CString state)
 			break;
 		}
 	}
+#else
+	bool isFindSerial = false;
+	isFindSerial = true;
+#endif
+
 	if (isFindSerial)
 	{
-		cSerialNumber = tempStr.Mid(tempStr.GetLength()-6,tempStr.GetLength());
+		cSerialNumber = cSerialNumber.Mid(cSerialNumber.GetLength()-6,cSerialNumber.GetLength());
 		GetDlgItem(IDC_EDIT_SERIALNUMBER_OQC)->SetWindowText(cSerialNumber);
 	}
 	else
@@ -487,6 +575,16 @@ void COQC::NoRootFunction(CString state)
 	if (!res)
 	{
 		AfxMessageBox(L"打开数据库失败");
+		return;
+	}
+
+	//bool res = false;
+	CString str;
+	//COperateINIFile operateFile;
+	res = operateFile.CheckDataisBusy("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt",3,str);
+	if (!res)
+	{
+		AfxMessageBox(str);
 		return;
 	}
 
@@ -564,7 +662,7 @@ void COQC::NoRootFunction(CString state)
 	//CString	strData;
 	CString csTotalKeyInformation;//总的关键物料信息
 	CString tempTextData;
-
+	CString piciInformation;    //批次信息
 	for(int i=0; i<m_dbDemo.GetRecordCount(); i++)
 	{
 		m_dbDemo.GetFieldValue(_T("SerialNum"), strData);
@@ -596,7 +694,8 @@ void COQC::NoRootFunction(CString state)
 								csTotalKeyInformation = tempTextData + L"-";
 								GetDlgItemText(IDC_EDIT_SERIALNUMBER_OQC_Special,tempTextData);
 								csTotalKeyInformation += tempTextData;
-
+								GetDlgItemText(IDC_EDIT_N_ONE,tempTextData);
+								csTotalKeyInformation += tempTextData;
 								strSQL.Format(_T("UPDATE DemoTable SET [关键物料1] = '%s' WHERE [个数] = '%s'"),csTotalKeyInformation,cstemprootMinumNumber);
 								m_dbDemo.Execute(strSQL);
 
@@ -606,7 +705,8 @@ void COQC::NoRootFunction(CString state)
 								csTotalKeyInformation = tempTextData + L"-";
 								GetDlgItemText(IDC_EDIT_SERIALNUMBER_OQC_Special_TWO,tempTextData);
 								csTotalKeyInformation += tempTextData;
-
+								GetDlgItemText(IDC_EDIT_N_TWO,tempTextData);
+								csTotalKeyInformation += tempTextData;
 								strSQL.Format(_T("UPDATE DemoTable SET [关键物料2] = '%s' WHERE [个数] = '%s'"),csTotalKeyInformation,cstemprootMinumNumber);
 								m_dbDemo.Execute(strSQL);
 								/************************************************************************/
@@ -615,8 +715,21 @@ void COQC::NoRootFunction(CString state)
 								csTotalKeyInformation = tempTextData + L"-";
 								GetDlgItemText(IDC_EDIT_SERIALNUMBER_OQC_Special_THREE,tempTextData);
 								csTotalKeyInformation += tempTextData;
-
+								GetDlgItemText(IDC_EDIT_N_THREE,tempTextData);
+								csTotalKeyInformation += tempTextData;
 								strSQL.Format(_T("UPDATE DemoTable SET [关键物料3] = '%s' WHERE [个数] = '%s'"),csTotalKeyInformation,cstemprootMinumNumber);
+								m_dbDemo.Execute(strSQL);
+								/************************************************************************/
+
+								/************************************************************************/
+								//3:导入4
+								GetDlgItemText(IDC_EDIT_FOUR,tempTextData);
+								csTotalKeyInformation = tempTextData + L"-";
+								GetDlgItemText(IDC_EDIT_SERIALNUMBER_OQC_Special_FOUR,tempTextData);
+								csTotalKeyInformation += tempTextData;
+								GetDlgItemText(IDC_EDIT_N_FOUR,tempTextData);
+								csTotalKeyInformation += tempTextData;
+								strSQL.Format(_T("UPDATE DemoTable SET [关键物料4] = '%s' WHERE [个数] = '%s'"),csTotalKeyInformation,cstemprootMinumNumber);
 								m_dbDemo.Execute(strSQL);
 								/************************************************************************/
 							}
@@ -804,6 +917,16 @@ void COQC::RootFunction(CString state)
 		return;
 	}
 
+	//bool res = false;
+	CString str;
+	//COperateINIFile operateFile;
+	res = operateFile.CheckDataisBusy("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt",3,str);
+	if (!res)
+	{
+		AfxMessageBox(str);
+		return;
+	}
+
 	res = m_dbDemo.OpenRecordset("SELECT * FROM DemoTable");
 	if (!res)
 	{
@@ -905,27 +1028,42 @@ void COQC::RootFunction(CString state)
 						csTotalKeyInformation = tempTextData + L"-";
 						GetDlgItemText(IDC_EDIT_SERIALNUMBER_OQC_Special,tempTextData);
 						csTotalKeyInformation += tempTextData;
+						GetDlgItemText(IDC_EDIT_N_ONE,tempTextData);
+						csTotalKeyInformation += tempTextData;
 						strSQL.Format(_T("UPDATE DemoTable SET [关键物料1] = '%s' WHERE [个数] = '%s'"),csTotalKeyInformation,cstemprootMinumNumber);
 						m_dbDemo.Execute(strSQL);
-						/************************************************************************/
 
-						/************************************************************************/
 						//2:导入2
+						/************************************************************************/
 						GetDlgItemText(IDC_EDIT_TWO,tempTextData);
 						csTotalKeyInformation = tempTextData + L"-";
 						GetDlgItemText(IDC_EDIT_SERIALNUMBER_OQC_Special_TWO,tempTextData);
 						csTotalKeyInformation += tempTextData;
+						GetDlgItemText(IDC_EDIT_N_TWO,tempTextData);
+						csTotalKeyInformation += tempTextData;
 						strSQL.Format(_T("UPDATE DemoTable SET [关键物料2] = '%s' WHERE [个数] = '%s'"),csTotalKeyInformation,cstemprootMinumNumber);
 						m_dbDemo.Execute(strSQL);
-						/************************************************************************/
-
 						/************************************************************************/
 						//3:导入3
 						GetDlgItemText(IDC_EDIT_THREE,tempTextData);
 						csTotalKeyInformation = tempTextData + L"-";
 						GetDlgItemText(IDC_EDIT_SERIALNUMBER_OQC_Special_THREE,tempTextData);
 						csTotalKeyInformation += tempTextData;
+						GetDlgItemText(IDC_EDIT_N_THREE,tempTextData);
+						csTotalKeyInformation += tempTextData;
 						strSQL.Format(_T("UPDATE DemoTable SET [关键物料3] = '%s' WHERE [个数] = '%s'"),csTotalKeyInformation,cstemprootMinumNumber);
+						m_dbDemo.Execute(strSQL);
+						/************************************************************************/
+
+						/************************************************************************/
+						//3:导入4
+						GetDlgItemText(IDC_EDIT_FOUR,tempTextData);
+						csTotalKeyInformation = tempTextData + L"-";
+						GetDlgItemText(IDC_EDIT_SERIALNUMBER_OQC_Special_FOUR,tempTextData);
+						csTotalKeyInformation += tempTextData;
+						GetDlgItemText(IDC_EDIT_N_FOUR,tempTextData);
+						csTotalKeyInformation += tempTextData;
+						strSQL.Format(_T("UPDATE DemoTable SET [关键物料4] = '%s' WHERE [个数] = '%s'"),csTotalKeyInformation,cstemprootMinumNumber);
 						m_dbDemo.Execute(strSQL);
 						/************************************************************************/
 
@@ -988,4 +1126,86 @@ HBRUSH COQC::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 	// TODO:  Return a different brush if the default is not desired
 	return hbr;
+}
+
+
+bool COQC::GetInformation()
+{
+	int nIndex =  m_ProductNameCombox.GetCurSel();
+	if (nIndex < 0)
+	{
+		AfxMessageBox(L"你需要选择一个产品名称");
+		return false;
+	}
+	CString productName;
+	m_ProductNameCombox.GetLBText(nIndex,productName);
+
+	COperateINIFile operateFile;
+	if (!operateFile.GetWhatYouNeed("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\配置文件\\OQC-Config.txt",productName,"物料编码",csCode))
+	{
+		return false;
+	}
+	if (!operateFile.GetWhatYouNeed("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\配置文件\\OQC-Config.txt",productName,"物料名称",csCodeName))
+	{
+		return false;
+	}
+	return true;
+}
+
+
+void COQC::UpdataNewUI(void)
+{
+	csCode.clear();
+	csCodeName.clear();
+	GetInformation();
+	int len = (int)csCode.size();
+	GetDlgItem(IDC_EDIT_ONE)->SetWindowText(L"");
+	GetDlgItem(IDC_EDIT_TWO)->SetWindowText(L"");
+	GetDlgItem(IDC_EDIT_THREE)->SetWindowText(L"");
+	GetDlgItem(IDC_EDIT_FOUR)->SetWindowText(L"");
+	if (len > 0)
+	{
+		GetDlgItem(IDC_EDIT_ONE)->SetWindowText(csCode.at(0));
+	}
+	if (len > 1)
+	{
+		GetDlgItem(IDC_EDIT_TWO)->SetWindowText(csCode.at(1));
+	}
+	if (len > 2)
+	{
+		GetDlgItem(IDC_EDIT_THREE)->SetWindowText(csCode.at(2));
+	}
+	if (len > 3)
+	{
+		GetDlgItem(IDC_EDIT_FOUR)->SetWindowText(csCode.at(3));
+	}
+	GetDlgItem(IDC_EDIT_SERIALNUMBER_OQC_Special)->SetWindowText(L"");
+	GetDlgItem(IDC_EDIT_SERIALNUMBER_OQC_Special_TWO)->SetWindowText(L"");
+	GetDlgItem(IDC_EDIT_SERIALNUMBER_OQC_Special_THREE)->SetWindowText(L"");
+	GetDlgItem(IDC_EDIT_SERIALNUMBER_OQC_Special_FOUR)->SetWindowText(L"");
+
+	len = (int)csCodeName.size();
+	if (len > 0)
+	{
+		GetDlgItem(IDC_EDIT_SERIALNUMBER_OQC_Special)->SetWindowText(csCodeName.at(0));
+	}
+	if (len > 1)
+	{
+		GetDlgItem(IDC_EDIT_SERIALNUMBER_OQC_Special_TWO)->SetWindowText(csCodeName.at(1));
+	}
+	if (len > 2)
+	{
+		GetDlgItem(IDC_EDIT_SERIALNUMBER_OQC_Special_THREE)->SetWindowText(csCodeName.at(2));
+	}
+	if (len > 3)
+	{
+		GetDlgItem(IDC_EDIT_SERIALNUMBER_OQC_Special_FOUR)->SetWindowText(csCodeName.at(3));
+	}
+}
+
+
+void COQC::OnCbnSelchangeComboPnameCombox()
+{
+	// TODO: Add your control notification handler code here
+	UpdataNewUI();
 }

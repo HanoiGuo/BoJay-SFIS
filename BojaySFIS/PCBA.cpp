@@ -106,6 +106,7 @@ void CPCBA::OnPaint()
 void CPCBA::OnBnClickedButtonPcba()
 {
 	// TODO: Add your control notification handler code here
+	/*
 	bool res = false;
 	CString str;
 	COperateINIFile operateFile;
@@ -115,6 +116,7 @@ void CPCBA::OnBnClickedButtonPcba()
 		AfxMessageBox(str);
 		return;
 	}
+	*/
 	if (bRootPCBACodeAuthority)
 	{
 		RootFunction();
@@ -232,6 +234,7 @@ void CPCBA::NoRootFunction(void)
 	GetDlgItem(IDC_EDIT_NAME_PCBA)->SetWindowText(cName);
 
 
+#if 1
 	//分离序列号
 	bool isFindSerial = false;
 	CString *pStr;
@@ -256,9 +259,14 @@ void CPCBA::NoRootFunction(void)
 			break;
 		}
 	}
+#else
+	bool isFindSerial = false; 
+	isFindSerial = true;
+#endif
+
 	if (isFindSerial)
 	{
-		cSerialNumber = tempStr.Mid(tempStr.GetLength()-6,tempStr.GetLength());
+		cSerialNumber = cSerialNumber.Mid(cSerialNumber.GetLength()-6,cSerialNumber.GetLength());
 		GetDlgItem(IDC_EDIT_SERIALNUMBER_PCBA)->SetWindowText(cSerialNumber);
 	}
 	else
@@ -279,6 +287,16 @@ void CPCBA::NoRootFunction(void)
 	if (!res)
 	{
 		AfxMessageBox(L"打开数据库失败");
+		return;
+	}
+
+	//bool res = false;
+	CString str;
+	//COperateINIFile operateFile;
+	res = operateFile.CheckDataisBusy("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt",6,str);
+	if (!res)
+	{
+		AfxMessageBox(str);
 		return;
 	}
 
@@ -489,7 +507,6 @@ void CPCBA::RootFunction(void)
 		return;
 	}
 
-
 	if (m_dbDemo.IsConnecting())
 	{
 		m_dbDemo.CloseConnection();
@@ -500,6 +517,16 @@ void CPCBA::RootFunction(void)
 	if (!res)
 	{
 		AfxMessageBox(L"打开数据库失败");
+		return;
+	}
+
+	//bool res = false;
+	CString str;
+	//COperateINIFile operateFile;
+	res = operateFile.CheckDataisBusy("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt",6,str);
+	if (!res)
+	{
+		AfxMessageBox(str);
 		return;
 	}
 

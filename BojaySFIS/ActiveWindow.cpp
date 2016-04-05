@@ -965,15 +965,6 @@ bool CActiveWindow::RootFunction(CString cSerialNumber, CString csState,CString 
 void CActiveWindow::OnBnClickedButtonActiveAll()
 {
 	// TODO: Add your control notification handler code here
-	bool res = false;
-	CString str;
-	res = operateFileClass.CheckDataisBusy("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt",0,str);
-	if (!res)
-	{
-		AfxMessageBox(str);
-		return;
-	}
-
 	if (bRootActiveWindowAuthority)
 	{
 		RootFunction();
@@ -1030,14 +1021,20 @@ CString * CActiveWindow::SplitString(CString str, char split, int &iSubStrs)
 }
 
 
-bool CActiveWindow::GetSerialNumber(CString sourceSerial,CString &serial)
+bool CActiveWindow::GetSerialNumber(CString sourceSerial,CString &serial,bool &isB)
 {
 #if 1
 	sourceSerial.MakeUpper();
 	int nPos = sourceSerial.Find(L"F");
+
 	if(nPos < 0)
 	{
-		return false;
+		isB = true;
+		int nPos = sourceSerial.Find(L"B");
+		if (nPos < 0)
+		{
+			return false;
+		}
 	}
 	serial = sourceSerial;
 #else
@@ -1169,9 +1166,9 @@ void CActiveWindow::NoRootFunction(void)
 		return;
 	}
 
-
+	bool isB = false;
 	CString realSerial;
-	res = GetSerialNumber(cSerialNumber,realSerial);
+	res = GetSerialNumber(cSerialNumber,realSerial,isB);
 	if (!res)
 	{
 		AfxMessageBox(L"分离序列号失败，请检查你输入的序列号");
@@ -1181,7 +1178,15 @@ void CActiveWindow::NoRootFunction(void)
 	CString csCharacter;
 	CString csDigital;
 	realSerial.MakeUpper();
-	csCharacter = csCustomer + L"-F";
+	if (isB == false)
+	{
+		csCharacter = csCustomer + L"-F";
+	}
+	else
+	{
+		csCharacter = csCustomer + L"-B";
+	}
+	
 	csDigital = realSerial.Mid(1,realSerial.GetLength());
 	int iInitialValue = _ttoi(csDigital);
 	for (int k=0; k<iTotalCount; k++)
@@ -1201,6 +1206,15 @@ void CActiveWindow::NoRootFunction(void)
 	if (!res)
 	{
 		AfxMessageBox(L"打开数据库失败");
+		return;
+	}
+
+	//bool res = false;
+	CString str;
+	res = operateFileClass.CheckDataisBusy("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt",0,str);
+	if (!res)
+	{
+		AfxMessageBox(str);
 		return;
 	}
 
@@ -1376,6 +1390,14 @@ void CActiveWindow::RootFunction(void)
 	if (!res)
 	{
 		AfxMessageBox(L"打开数据库失败");
+		return;
+	}
+
+	CString str;
+	res = operateFileClass.CheckDataisBusy("\\\\172.20.0.8\\1.公司会议资料\\博杰生产管理软件\\Debug\\busy.txt",0,str);
+	if (!res)
+	{
+		AfxMessageBox(str);
 		return;
 	}
 
