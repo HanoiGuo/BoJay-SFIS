@@ -234,6 +234,7 @@ void CPCBA::NoRootFunction(void)
 	GetDlgItem(IDC_EDIT_NAME_PCBA)->SetWindowText(cName);
 
 
+#if 1
 	//·ÖÀëÐòÁÐºÅ
 	bool isFindSerial = false;
 	CString *pStr;
@@ -258,9 +259,14 @@ void CPCBA::NoRootFunction(void)
 			break;
 		}
 	}
+#else
+	bool isFindSerial = false; 
+	isFindSerial = true;
+#endif
+
 	if (isFindSerial)
 	{
-		cSerialNumber = tempStr.Mid(tempStr.GetLength()-6,tempStr.GetLength());
+		cSerialNumber = cSerialNumber.Mid(cSerialNumber.GetLength()-6,cSerialNumber.GetLength());
 		GetDlgItem(IDC_EDIT_SERIALNUMBER_PCBA)->SetWindowText(cSerialNumber);
 	}
 	else

@@ -69,7 +69,7 @@ public:
 	bool RootFunction(CString cSerialNumber, CString csState,CString csItemName,CString cName, CString cID);
 	afx_msg void OnBnClickedButtonActiveAll();
 	CString *SplitString(CString str, char split, int &iSubStrs);
-	bool GetSerialNumber(CString sourceSerial,CString &serial);
+	bool GetSerialNumber(CString sourceSerial,CString &serial,bool &isB);
 	void GetFullSerialItem(CString sourceSerial,CString realSerial,CString &strData);
 	void NoRootFunction(void);
 	afx_msg void OnBnClickedButtonOkActive();

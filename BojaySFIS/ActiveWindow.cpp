@@ -1021,14 +1021,20 @@ CString * CActiveWindow::SplitString(CString str, char split, int &iSubStrs)
 }
 
 
-bool CActiveWindow::GetSerialNumber(CString sourceSerial,CString &serial)
+bool CActiveWindow::GetSerialNumber(CString sourceSerial,CString &serial,bool &isB)
 {
 #if 1
 	sourceSerial.MakeUpper();
 	int nPos = sourceSerial.Find(L"F");
+
 	if(nPos < 0)
 	{
-		return false;
+		isB = true;
+		int nPos = sourceSerial.Find(L"B");
+		if (nPos < 0)
+		{
+			return false;
+		}
 	}
 	serial = sourceSerial;
 #else
@@ -1160,9 +1166,9 @@ void CActiveWindow::NoRootFunction(void)
 		return;
 	}
 
-
+	bool isB = false;
 	CString realSerial;
-	res = GetSerialNumber(cSerialNumber,realSerial);
+	res = GetSerialNumber(cSerialNumber,realSerial,isB);
 	if (!res)
 	{
 		AfxMessageBox(L"·ÖÀëÐòÁÐºÅÊ§°Ü£¬Çë¼ì²éÄãÊäÈëµÄÐòÁÐºÅ");
@@ -1172,7 +1178,15 @@ void CActiveWindow::NoRootFunction(void)
 	CString csCharacter;
 	CString csDigital;
 	realSerial.MakeUpper();
-	csCharacter = csCustomer + L"-F";
+	if (isB == false)
+	{
+		csCharacter = csCustomer + L"-F";
+	}
+	else
+	{
+		csCharacter = csCustomer + L"-B";
+	}
+	
 	csDigital = realSerial.Mid(1,realSerial.GetLength());
 	int iInitialValue = _ttoi(csDigital);
 	for (int k=0; k<iTotalCount; k++)

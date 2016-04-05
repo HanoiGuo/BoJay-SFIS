@@ -522,6 +522,7 @@ void COQC::NoRootFunction(CString state)
 		}
 	}
 
+#if 1
 	//·ÖÀëÐòÁÐºÅ
 	bool isFindSerial = false;
 	CString *pStr;
@@ -546,9 +547,14 @@ void COQC::NoRootFunction(CString state)
 			break;
 		}
 	}
+#else
+	bool isFindSerial = false;
+	isFindSerial = true;
+#endif
+
 	if (isFindSerial)
 	{
-		cSerialNumber = tempStr.Mid(tempStr.GetLength()-6,tempStr.GetLength());
+		cSerialNumber = cSerialNumber.Mid(cSerialNumber.GetLength()-6,cSerialNumber.GetLength());
 		GetDlgItem(IDC_EDIT_SERIALNUMBER_OQC)->SetWindowText(cSerialNumber);
 	}
 	else

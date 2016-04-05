@@ -364,9 +364,9 @@ void CSoundInsulation::NoRootFunction(void)
 	GetDlgItem(IDC_EDIT_NAME_SOUND)->SetWindowText(cName);
 
 
-
-	//分离序列号
 	bool isFindSerial = false;
+#if 1
+	//分离序列号
 	CString *pStr;
 	int iSubStrs=0;
 	pStr = SplitString(cSerialNumber,';',iSubStrs);
@@ -389,9 +389,12 @@ void CSoundInsulation::NoRootFunction(void)
 			break;
 		}
 	}
+#else
+	isFindSerial = true;
+#endif
 	if (isFindSerial)
 	{
-		cSerialNumber = tempStr.Mid(tempStr.GetLength()-6,tempStr.GetLength());
+		cSerialNumber = cSerialNumber.Mid(cSerialNumber.GetLength()-6,cSerialNumber.GetLength());
 		GetDlgItem(IDC_EDIT_SERIALNUMBER_SOUND)->SetWindowText(cSerialNumber);
 	}
 	else
